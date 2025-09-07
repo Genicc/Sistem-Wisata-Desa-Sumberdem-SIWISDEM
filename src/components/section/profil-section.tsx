@@ -34,17 +34,16 @@ export default function ProfilSection() {
             {/* Bungkus video dengan aspect ratio agar responsif */}
             <div className="relative rounded-2xl overflow-hidden shadow-lg">
                 <div className="aspect-video">
-                <video
-                    src="/videos/profil-desa.mp4" // sesuaikan path
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                    preload="metadata"
-                    className="h-full w-full object-cover"
-                    // optional poster:
-                    // poster="/images/profil-desa-poster.jpg"
-                />
+                    <iframe
+                        width="100%"
+                        height="100%"
+                        src="https://www.youtube.com/embed/aD9-28wOaww?si=GTOX-jXnAtNYLSTN"
+                        title="YouTube video player"
+                        frameBorder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; unmute"
+                        allowFullScreen
+                        className="h-full w-full"
+                    ></iframe>
                 </div>
             </div>
             </div>
