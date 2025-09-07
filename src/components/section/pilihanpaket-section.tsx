@@ -52,7 +52,6 @@ const paketList: Paket[] = [
         "Coffee Break (Minuman khas Desa Sumberdem)",
         "Makanan khas desa",
         "Atraksi Budaya",
-        "Souvenir UMKM",
         ],
         note: "*Tersedia Tour Guide",
     },

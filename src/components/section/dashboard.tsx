@@ -30,7 +30,7 @@ export default function Home() {
       {/* Text Section */}
       <div className="relative z-10 flex flex-col items-center justify-center h-full text-white text-center px-4">
         <h2 className={`${playfair.className} text-2xl sm:text-4xl md:text-6xl font-normal`}>
-          Kampung Tematik Nan Asri
+          Kampung Eduwisata Tematik Nan Asri
         </h2>
         <h1 className={`${dancing.className} text-4xl sm:text-6xl md:text-9xl font-bold mt-2`}>
           Desa Sumberdem
