@@ -1,3 +1,4 @@
+// app/api/submit/route.ts
 import { NextResponse } from 'next/server';
 import { google } from 'googleapis';
 
@@ -13,12 +14,12 @@ function getAuth() {
 
     let creds: any;
     try {
-        creds = JSON.parse(raw); // gagal di sini kalau ENV bukan JSON valid
+        creds = JSON.parse(raw);
     } catch {
         throw new Error('GOOGLE_SERVICE_ACCOUNT_KEY bukan JSON valid. Cek format di .env / Vercel.');
     }
 
-    // normalisasi: kalau ENV berisi '\n' literal, ubah ke newline asli
+    // ubah '\n' literal jadi newline asli untuk private_key
     const key: string = String(creds.private_key || '').replace(/\\n/g, '\n');
 
     return new google.auth.JWT({
@@ -26,18 +27,28 @@ function getAuth() {
         key,
         scopes: SCOPES,
     });
-}
+    }
 
-export async function POST(req: Request) {
+    export async function POST(req: Request) {
     try {
         const body = await req.json();
 
-        // validasi singkat
+        // --- Validasi singkat
+        const nama = String(body.nama_lengkap_instansi || '').trim();
+        const email = String(body.email || '').trim();
+        const nomorWa = String(body.nomor_wa || '').trim();
         const jumlah = Number(body.jumlah_peserta || 0);
-        if (!body.nama_lengkap_instansi || !body.email || jumlah < 1 || !body.tanggal_kunjungan || !body.pilihan_paket) {
-        return NextResponse.json({ ok: false, error: 'Field wajib belum lengkap/valid.' }, { status: 400 });
+        const tanggal = String(body.tanggal_kunjungan || '').trim();
+        const paket = String(body.pilihan_paket || '').trim();
+
+        if (!nama || !email || !nomorWa || !tanggal || !paket || !Number.isFinite(jumlah) || jumlah < 1) {
+        return NextResponse.json(
+            { ok: false, error: 'Field wajib belum lengkap/valid.' },
+            { status: 400 }
+        );
         }
 
+        // --- Tulis ke Google Sheets
         const auth = getAuth();
         const sheets = google.sheets({ version: 'v4', auth });
 
@@ -45,14 +56,17 @@ export async function POST(req: Request) {
         spreadsheetId: SPREADSHEET_ID,
         range: `${SHEET_NAME}!A:Z`,
         valueInputOption: 'USER_ENTERED',
-        requestBody: { values: [[
-            new Date().toISOString(),
-            body.nama_lengkap_instansi,
-            body.email,
+        requestBody: {
+            values: [[
+            new Date().toISOString(), // timestamp
+            nama,
+            email,
+            nomorWa,                  // 👈 kolom baru: nomor WhatsApp
             jumlah,
-            body.tanggal_kunjungan,
-            body.pilihan_paket,
-        ]]},
+            tanggal,
+            paket,
+            ]],
+        },
         });
 
         return NextResponse.json({ ok: true });

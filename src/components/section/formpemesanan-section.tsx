@@ -12,10 +12,19 @@ export default function FormPemesanan() {
     const [form, setForm] = useState({
         nama: "",
         email: "",
+        nomorwa: "",
         jumlah: "",
         tanggal: "",
         paket: "",
     });
+
+    const openWA = () => {
+        const pesan = `Halo, saya ingin info paket wisata.\n\nNama: ${form.nama}\nEmail: ${form.email}\nJumlah: ${form.jumlah}\nTanggal: ${form.tanggal}\nPaket: ${form.paket}`;
+        window.open(
+        `https://wa.me/${nomorWA}?text=${encodeURIComponent(pesan)}`,
+        "_blank"
+        );
+    };
 
     const [loading, setLoading] = useState(false);
 
@@ -28,12 +37,12 @@ export default function FormPemesanan() {
         setLoading(true);
 
         try {
-        // Mapping field UI -> payload API
         const payload = {
             nama_lengkap_instansi: form.nama.trim(),
             email: form.email.trim(),
+            nomor_wa: form.nomorwa.trim(),
             jumlah_peserta: Number(form.jumlah || 0),
-            tanggal_kunjungan: form.tanggal, // YYYY-MM-DD dari <input type="date">
+            tanggal_kunjungan: form.tanggal,
             pilihan_paket: form.paket,
         };
 
@@ -46,7 +55,6 @@ export default function FormPemesanan() {
         const json = await res.json();
         if (!res.ok || !json.ok) throw new Error(json.error || "Gagal mengirim");
 
-        // ✅ Popup estetik tanpa menampilkan data
         await Swal.fire({
             icon: "success",
             title: "Pemesanan Terkirim!",
@@ -54,7 +62,7 @@ export default function FormPemesanan() {
             confirmButtonColor: "#2f6c2f",
         });
 
-        setForm({ nama: "", email: "", jumlah: "", tanggal: "", paket: "" });
+        setForm({ nama: "", email: "", nomorwa: "", jumlah: "", tanggal: "", paket: "" });
         } catch (err: any) {
         await Swal.fire({
             icon: "error",
@@ -64,14 +72,6 @@ export default function FormPemesanan() {
         } finally {
         setLoading(false);
         }
-    };
-
-    const openWA = () => {
-        const pesan = `Halo, saya ingin info paket wisata.\n\nNama: ${form.nama}\nEmail: ${form.email}\nJumlah: ${form.jumlah}\nTanggal: ${form.tanggal}\nPaket: ${form.paket}`;
-        window.open(
-        `https://wa.me/${nomorWA}?text=${encodeURIComponent(pesan)}`,
-        "_blank"
-        );
     };
 
     return (
@@ -97,41 +97,48 @@ export default function FormPemesanan() {
             <form onSubmit={onSubmit} className="mt-8 text-white/95 max-w-3xl space-y-6">
             {/* Nama */}
             <div>
-                <label className="block text-sm md:text-base mb-2">
-                Nama Lengkap / Instansi
-                </label>
+                <label className="block text-sm md:text-base mb-2">Nama Lengkap / Instansi</label>
                 <input
                 name="nama"
                 value={form.nama}
                 onChange={onChange}
-                placeholder=""
                 required
                 className="w-full bg-transparent outline-none border-b-2 border-white/70 focus:border-white py-2"
                 type="text"
                 />
             </div>
 
-            {/* Email */}
-            <div>
+            {/* Email & Nomor WA */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
                 <label className="block text-sm md:text-base mb-2">Email</label>
                 <input
-                name="email"
-                value={form.email}
-                onChange={onChange}
-                placeholder=""
-                required
-                className="w-full bg-transparent outline-none border-b-2 border-white/70 focus:border-white py-2"
-                type="email"
+                    name="email"
+                    value={form.email}
+                    onChange={onChange}
+                    required
+                    className="w-full bg-transparent outline-none border-b-2 border-white/70 focus:border-white py-2"
+                    type="email"
                 />
+                </div>
+                <div>
+                <label className="block text-sm md:text-base mb-2">Nomor WhatsApp</label>
+                <input
+                    name="nomorwa"
+                    value={form.nomorwa}
+                    onChange={onChange}
+                    required
+                    className="w-full bg-transparent outline-none border-b-2 border-white/70 focus:border-white py-2"
+                    type="tel"
+                    placeholder="08xxxxxxxxxx"
+                />
+                </div>
             </div>
 
-            {/* Grid: Jumlah & Tanggal */}
+            {/* Jumlah & Tanggal */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {/* Jumlah */}
                 <div className="relative">
-                <label className="block text-sm md:text-base mb-2">
-                    Jumlah peserta
-                </label>
+                <label className="block text-sm md:text-base mb-2">Jumlah peserta</label>
                 <input
                     name="jumlah"
                     value={form.jumlah}
@@ -143,12 +150,8 @@ export default function FormPemesanan() {
                 />
                 <Users className="absolute right-0 bottom-2 h-6 w-6 opacity-90" />
                 </div>
-
-                {/* Tanggal */}
                 <div className="relative">
-                <label className="block text-sm md:text-base mb-2">
-                    Tanggal kunjungan
-                </label>
+                <label className="block text-sm md:text-base mb-2">Tanggal kunjungan</label>
                 <input
                     name="tanggal"
                     value={form.tanggal}
@@ -178,16 +181,8 @@ export default function FormPemesanan() {
                     <option value="Paket 3">Paket 3</option>
                     <option value="Paket 4">Paket 4</option>
                 </select>
-
-                {/* ikon bulat kanan */}
                 <div className="mr-2 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#2f6c2f]">
-                    <svg
-                    viewBox="0 0 24 24"
-                    className="h-5 w-5 text-white"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    >
+                    <svg viewBox="0 0 24 24" className="h-5 w-5 text-white" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M6 9l6 6 6-6" />
                     </svg>
                 </div>
@@ -216,6 +211,7 @@ export default function FormPemesanan() {
             <p className="text-xs text-white mt-2 text-center lg:md:text-right sm:md:text-center">
                 *ada pertanyaan atau konfirmasi ulang? Silahkan klik Contact Person.
             </p>
+            
             </form>
         </div>
         </section>
