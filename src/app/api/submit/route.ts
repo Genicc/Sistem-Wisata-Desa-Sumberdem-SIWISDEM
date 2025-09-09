@@ -19,7 +19,6 @@ function getAuth() {
         throw new Error('GOOGLE_SERVICE_ACCOUNT_KEY bukan JSON valid. Cek format di .env / Vercel.');
     }
 
-    // ubah '\n' literal jadi newline asli untuk private_key
     const key: string = String(creds.private_key || '').replace(/\\n/g, '\n');
 
     return new google.auth.JWT({
@@ -27,6 +26,13 @@ function getAuth() {
         key,
         scopes: SCOPES,
     });
+    }
+
+    function timestampWIB(): string {
+        return new Date().toLocaleString('sv-SE', {
+            timeZone: 'Asia/Jakarta',
+            hour12: false,
+        });
     }
 
     export async function POST(req: Request) {
@@ -58,10 +64,10 @@ function getAuth() {
         valueInputOption: 'USER_ENTERED',
         requestBody: {
             values: [[
-            new Date().toISOString(), // timestamp
+            timestampWIB(), // timestamp
             nama,
             email,
-            nomorWa,                  // 👈 kolom baru: nomor WhatsApp
+            nomorWa,                  
             jumlah,
             tanggal,
             paket,
