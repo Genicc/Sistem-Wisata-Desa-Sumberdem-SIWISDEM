@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Lora, JetBrains_Mono, Great_Vibes, Lato } from "next/font/google";
+import { Analytics } from '@vercel/analytics/next';
 import "./globals.css";
 
 import {ThemeProvider} from "@/components/theme-provider";
@@ -52,6 +53,7 @@ export default function RootLayout({
             alt: "Logo Desa Sumberdem"
           }} />
           {children}
+          <Analytics />
           <Footer />
 
         </div>
