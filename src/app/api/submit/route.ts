@@ -1,68 +1,42 @@
 import { NextResponse } from 'next/server';
 import { google } from 'googleapis';
 
-// Wajib pakai Node runtime (googleapis tidak kompatibel di Edge)
 export const runtime = 'nodejs';
 
+const SCOPES = ['https://www.googleapis.com/auth/spreadsheets'];
 const SPREADSHEET_ID = process.env.SPREADSHEET_ID!;
 const SHEET_NAME = process.env.SHEET_NAME || 'Sheet1';
-const SCOPES = ['https://www.googleapis.com/auth/spreadsheets'];
 
 function getAuth() {
-    const raw = process.env.GOOGLE_SERVICE_ACCOUNT_KEY!;
+    const raw = process.env.GOOGLE_SERVICE_ACCOUNT_KEY;
+    if (!raw) throw new Error('Env GOOGLE_SERVICE_ACCOUNT_KEY tidak ditemukan.');
+
     let creds: any;
     try {
-        creds = JSON.parse(raw); // <-- gagal di sini kalau env tidak JSON valid
-    } catch (e) {
+        creds = JSON.parse(raw); // gagal di sini kalau ENV bukan JSON valid
+    } catch {
         throw new Error('GOOGLE_SERVICE_ACCOUNT_KEY bukan JSON valid. Cek format di .env / Vercel.');
     }
-    return new (require('googleapis').google.auth.JWT)({
+
+    // normalisasi: kalau ENV berisi '\n' literal, ubah ke newline asli
+    const key: string = String(creds.private_key || '').replace(/\\n/g, '\n');
+
+    return new google.auth.JWT({
         email: creds.client_email,
-        key: creds.private_key,
-        scopes: ['https://www.googleapis.com/auth/spreadsheets'],
+        key,
+        scopes: SCOPES,
     });
 }
 
-
-type Payload = {
-    nama_lengkap_instansi?: string;
-    email?: string;
-    jumlah_peserta?: number | string;
-    tanggal_kunjungan?: string; // ex: YYYY-MM-DD
-    pilihan_paket?: string;
-};
-
 export async function POST(req: Request) {
     try {
-        const body = (await req.json()) as Payload;
+        const body = await req.json();
 
-        // Validasi minimal
-        if (!body.nama_lengkap_instansi) {
-        return NextResponse.json({ ok: false, error: 'Nama Lengkap/Instansi wajib diisi' }, { status: 400 });
-        }
-        if (!body.email) {
-        return NextResponse.json({ ok: false, error: 'Email wajib diisi' }, { status: 400 });
-        }
+        // validasi singkat
         const jumlah = Number(body.jumlah_peserta || 0);
-        if (!Number.isFinite(jumlah) || jumlah < 1) {
-        return NextResponse.json({ ok: false, error: 'Jumlah peserta minimal 1' }, { status: 400 });
+        if (!body.nama_lengkap_instansi || !body.email || jumlah < 1 || !body.tanggal_kunjungan || !body.pilihan_paket) {
+        return NextResponse.json({ ok: false, error: 'Field wajib belum lengkap/valid.' }, { status: 400 });
         }
-        if (!body.tanggal_kunjungan) {
-        return NextResponse.json({ ok: false, error: 'Tanggal kunjungan wajib diisi' }, { status: 400 });
-        }
-        if (!body.pilihan_paket) {
-        return NextResponse.json({ ok: false, error: 'Pilihan paket wajib diisi' }, { status: 400 });
-        }
-
-        // Susun row sesuai header
-        const values = [[
-        new Date().toISOString(),                // timestamp
-        body.nama_lengkap_instansi || '',
-        body.email || '',
-        jumlah,
-        body.tanggal_kunjungan || '',
-        body.pilihan_paket || '',
-        ]];
 
         const auth = getAuth();
         const sheets = google.sheets({ version: 'v4', auth });
@@ -71,12 +45,18 @@ export async function POST(req: Request) {
         spreadsheetId: SPREADSHEET_ID,
         range: `${SHEET_NAME}!A:Z`,
         valueInputOption: 'USER_ENTERED',
-        requestBody: { values },
+        requestBody: { values: [[
+            new Date().toISOString(),
+            body.nama_lengkap_instansi,
+            body.email,
+            jumlah,
+            body.tanggal_kunjungan,
+            body.pilihan_paket,
+        ]]},
         });
 
         return NextResponse.json({ ok: true });
     } catch (e: any) {
-        // Error umum: PERMISSION_DENIED (sheet belum di-share ke SA), invalid_grant (jam server/SA skew)
-        return NextResponse.json({ ok: false, error: e?.message || 'Server error' }, { status: 500 });
+        return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 });
     }
 }
