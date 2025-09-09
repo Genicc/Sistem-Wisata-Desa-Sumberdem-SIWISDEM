@@ -9,7 +9,7 @@ type Item = {
 function DestinasiCard({ item }: { item: Item }) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
-  // Pause semua video lain ketika video ini mulai play
+  
   const handleStarted = () => {
     const me = videoRef.current;
     if (!me) return;
@@ -44,7 +44,7 @@ function DestinasiCard({ item }: { item: Item }) {
 
     io.observe(v);
 
-    // Pause saat tab tidak aktif
+    
     const onVisibility = () => {
       if (document.hidden) v.pause();
     };
@@ -58,8 +58,7 @@ function DestinasiCard({ item }: { item: Item }) {
 
   return (
     <div className="flex flex-col items-center rounded-xl overflow-hidden shadow-lg hover:scale-105 transform transition duration-300">
-      {/* Wrapper rasio supaya tinggi konsisten */}
-      {/* <div className="relative w-full aspect-[16/9]"> */}
+      
         <video
           ref={videoRef}
           src={item.video}
@@ -71,7 +70,7 @@ function DestinasiCard({ item }: { item: Item }) {
           onMouseLeave={() => videoRef.current?.pause()}
           onPlay={handleStarted}
         />
-      {/* </div> */}
+
 
       <div className="bg-black text-white w-full py-2 text-center font-semibold text-base sm:text-lg">
         {item.title}

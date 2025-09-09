@@ -6,7 +6,7 @@ import LokasiMap from "@/components/section/maps-section";
 export default function Home() {
   return (
     <div className="relative flex flex-col min-h-full">
-        <main className="flex-grow mt-auto"> {/* Margin top to account for fixed header */}
+        <main className="flex-grow mt-auto">
           <Dashboard />
           <AboutSection />
           <DestinasiTujuan />

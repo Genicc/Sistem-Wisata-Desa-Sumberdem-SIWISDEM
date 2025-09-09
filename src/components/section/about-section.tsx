@@ -4,7 +4,7 @@ export default function AboutSection() {
   return (
     <section className="w-full bg-gray-50 py-12 px-6 md:px-16">
       <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-8 items-center">
-        {/* Gambar Kiri */}
+        {/* Konten Kiri */}
         <div className="overflow-hidden rounded-xl shadow-lg">
           <Image
             src="/images/gerbang.jpg"

@@ -24,7 +24,7 @@ export default function Home() {
         priority
       />
 
-      {/* Overlay gelap tipis biar teks lebih jelas */}
+      {/* Overlay gelap*/}
       <div className="absolute inset-0 bg-black/40" />
 
       {/* Text Section */}
