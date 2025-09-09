@@ -1,6 +1,8 @@
+// app/form-pemesanan/page.tsx
 "use client";
 
 import { useState } from "react";
+import Swal from "sweetalert2";
 import { CalendarDays, Users } from "lucide-react";
 
 export default function FormPemesanan() {
@@ -44,10 +46,21 @@ export default function FormPemesanan() {
         const json = await res.json();
         if (!res.ok || !json.ok) throw new Error(json.error || "Gagal mengirim");
 
-        alert("Pemesanan terkirim!\n\n" + JSON.stringify(form, null, 2));
+        // ✅ Popup estetik tanpa menampilkan data
+        await Swal.fire({
+            icon: "success",
+            title: "Pemesanan Terkirim!",
+            text: "Terima kasih, kami akan segera menghubungi Anda.",
+            confirmButtonColor: "#2f6c2f",
+        });
+
         setForm({ nama: "", email: "", jumlah: "", tanggal: "", paket: "" });
         } catch (err: any) {
-        alert("Gagal mengirim:\n" + (err?.message || "Terjadi kesalahan"));
+        await Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Gagal mengirim: " + (err?.message || "Terjadi kesalahan."),
+        });
         } finally {
         setLoading(false);
         }
