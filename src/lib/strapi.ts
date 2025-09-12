@@ -25,4 +25,4 @@ export async function strapiFetch<T>(
 
 /** Utility untuk membentuk URL media Strapi */
 export const mediaUrl = (url?: string | null) =>
-    !url ? undefined : url.startsWith('http') ? url : `${STRAPI_URL}${url}`;
+    !url ? undefined : url.startsWith('https') ? url : `${STRAPI_URL}${url}`;
