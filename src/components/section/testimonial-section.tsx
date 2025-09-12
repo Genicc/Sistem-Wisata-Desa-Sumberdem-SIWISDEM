@@ -13,17 +13,17 @@ type Testimonial = {
 const testimonials: Testimonial[] = [
     {
         name: "Srujiyanto",
-        avatar: "/images/pp.jpg",
-        text: "Mantab, penduduknya ramah, dan bisa beli kopi dgn hrga yg terjangkau.",
+        avatar: "/images/avatar.jpg",
+        text: "Belajar tentang pengelolaan sampah sambil menikmati suasana desa dan kebun lemon, rasanya menyenangkan sekaligus membuka wawasan.",
     },
     {
         name: "Sava Travel Photography",
-        avatar: "/images/pp.jpg",
-        text: "Tempat adem ayem dengan kehidupan yang ramah, terdapat perkebunan kopi yang sangat luas.",
+        avatar: "/images/avatar.jpg",
+        text: "Pertama kali coba minuman rosella di sini, rasanya segar banget! Cocok diminum setelah jalan-jalan di desa, apalagi udara sejuknya bikin tambah nikmat.",
     },
     {
         name: "Saekhun Hidayat",
-        avatar: "/images/pp.jpg",
+        avatar: "/images/avatar.jpg",
         text: "Tempat budidaya sekaligus wisata kopi paling nikmat dan ramah di Malang.",
     },
 ];
