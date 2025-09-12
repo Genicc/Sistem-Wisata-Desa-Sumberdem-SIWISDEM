@@ -89,7 +89,7 @@ type InfoItem = {
 };
 
 const STRAPI_URL =
-  process.env.NEXT_PUBLIC_STRAPI_URL || "https://respected-desk-20258e8518.strapiapp.com";
+  process.env.NEXT_PUBLIC_STRAPI_URL || "https://respected-desk-20258e8518.strapiapp.com"; 
 const mediaUrl = (url?: string) =>
   url?.startsWith("https") ? url : `${STRAPI_URL}${url ?? ""}`;
 

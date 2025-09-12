@@ -37,7 +37,7 @@ export async function getInfos(opts?: {
         "fields[3]": "sourceUrl",
         "fields[4]": "date",
         // populate cover
-        "populate[cover]": "true",
+        "populate[cover]": "*",
         // urutkan terbaru dulu
         "sort[0]": "date:desc",
         // pagination
