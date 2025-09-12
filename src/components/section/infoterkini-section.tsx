@@ -89,9 +89,9 @@ type InfoItem = {
 };
 
 const STRAPI_URL =
-  process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337";
+  process.env.NEXT_PUBLIC_STRAPI_URL || "https://respected-desk-20258e8518.strapiapp.com";
 const mediaUrl = (url?: string) =>
-  url?.startsWith("http") ? url : `${STRAPI_URL}${url ?? ""}`;
+  url?.startsWith("https") ? url : `${STRAPI_URL}${url ?? ""}`;
 
 const pickCoverUrl = (file?: UploadFile | null) => {
   const rel =
