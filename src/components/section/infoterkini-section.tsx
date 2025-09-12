@@ -89,10 +89,14 @@ type InfoItem = {
 };
 
 const STRAPI_URL =
-  process.env.NEXT_PUBLIC_STRAPI_URL || "https://respected-desk-20258e8518.strapiapp.com"; 
-const mediaUrl = (url?: string) =>
-  url?.startsWith("https") ? url : `${STRAPI_URL}${url ?? ""}`;
+  (process.env.NEXT_PUBLIC_STRAPI_URL ?? "https://respected-desk-20258e8518.strapiapp.com")
+    .replace(/\/+$/, ""); // buang trailing '/'
 
+const mediaUrl = (url?: string) => {
+  if (!url) return "";
+  if (/^https?:\/\//i.test(url)) return url;     // sudah absolut => pakai apa adanya
+  return `${STRAPI_URL}${url.startsWith("/") ? "" : "/"}${url}`; // relative => prefix
+};
 const pickCoverUrl = (file?: UploadFile | null) => {
   const rel =
     file?.formats?.small?.url ??
