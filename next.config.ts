@@ -5,14 +5,15 @@ const nextConfig: NextConfig = {
     domains: [
       "respected-desk-20258e8518.strapiapp.com",
       "respected-desk-20258e8518.media.strapiapp.com",
+      "localhost",
     ],
     remotePatterns: [
-      // contoh: Strapi di https://api.siwisdem.id
-      // { protocol: "https", hostname: "api.siwisdem.id" },
+      //domain dari luar
       { protocol: "https", hostname: "respected-desk-20258e8518.strapiapp.com", pathname: "/uploads/**" },
       { protocol: "https", hostname: "respected-desk-20258e8518.media.strapiapp.com", pathname: "/uploads/**" },
+      
       // jika masih lokal dan diakses dari browser lain:
-      // { protocol: "http", hostname: "localhost" },
+      { protocol: "http", hostname: "localhost", port: "1337", pathname: "/uploads/**" },
       // { protocol: "http", hostname: "192.168.1.**" },
     ],
   },
